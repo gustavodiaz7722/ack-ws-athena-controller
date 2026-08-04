@@ -61,12 +61,52 @@ const (
 	ColumnNullable_UNKNOWN  ColumnNullable = "UNKNOWN"
 )
 
+type ConnectionType string
+
+const (
+	ConnectionType_BIGQUERY           ConnectionType = "BIGQUERY"
+	ConnectionType_CMDB               ConnectionType = "CMDB"
+	ConnectionType_DATALAKEGEN2       ConnectionType = "DATALAKEGEN2"
+	ConnectionType_DB2                ConnectionType = "DB2"
+	ConnectionType_DB2AS400           ConnectionType = "DB2AS400"
+	ConnectionType_DOCUMENTDB         ConnectionType = "DOCUMENTDB"
+	ConnectionType_DYNAMODB           ConnectionType = "DYNAMODB"
+	ConnectionType_GOOGLECLOUDSTORAGE ConnectionType = "GOOGLECLOUDSTORAGE"
+	ConnectionType_HBASE              ConnectionType = "HBASE"
+	ConnectionType_MYSQL              ConnectionType = "MYSQL"
+	ConnectionType_OPENSEARCH         ConnectionType = "OPENSEARCH"
+	ConnectionType_ORACLE             ConnectionType = "ORACLE"
+	ConnectionType_POSTGRESQL         ConnectionType = "POSTGRESQL"
+	ConnectionType_REDSHIFT           ConnectionType = "REDSHIFT"
+	ConnectionType_SAPHANA            ConnectionType = "SAPHANA"
+	ConnectionType_SNOWFLAKE          ConnectionType = "SNOWFLAKE"
+	ConnectionType_SQLSERVER          ConnectionType = "SQLSERVER"
+	ConnectionType_SYNAPSE            ConnectionType = "SYNAPSE"
+	ConnectionType_TIMESTREAM         ConnectionType = "TIMESTREAM"
+	ConnectionType_TPCDS              ConnectionType = "TPCDS"
+)
+
+type DataCatalogStatus_SDK string
+
+const (
+	DataCatalogStatus_SDK_CREATE_COMPLETE                   DataCatalogStatus_SDK = "CREATE_COMPLETE"
+	DataCatalogStatus_SDK_CREATE_FAILED                     DataCatalogStatus_SDK = "CREATE_FAILED"
+	DataCatalogStatus_SDK_CREATE_FAILED_CLEANUP_COMPLETE    DataCatalogStatus_SDK = "CREATE_FAILED_CLEANUP_COMPLETE"
+	DataCatalogStatus_SDK_CREATE_FAILED_CLEANUP_FAILED      DataCatalogStatus_SDK = "CREATE_FAILED_CLEANUP_FAILED"
+	DataCatalogStatus_SDK_CREATE_FAILED_CLEANUP_IN_PROGRESS DataCatalogStatus_SDK = "CREATE_FAILED_CLEANUP_IN_PROGRESS"
+	DataCatalogStatus_SDK_CREATE_IN_PROGRESS                DataCatalogStatus_SDK = "CREATE_IN_PROGRESS"
+	DataCatalogStatus_SDK_DELETE_COMPLETE                   DataCatalogStatus_SDK = "DELETE_COMPLETE"
+	DataCatalogStatus_SDK_DELETE_FAILED                     DataCatalogStatus_SDK = "DELETE_FAILED"
+	DataCatalogStatus_SDK_DELETE_IN_PROGRESS                DataCatalogStatus_SDK = "DELETE_IN_PROGRESS"
+)
+
 type DataCatalogType string
 
 const (
-	DataCatalogType_GLUE   DataCatalogType = "GLUE"
-	DataCatalogType_HIVE   DataCatalogType = "HIVE"
-	DataCatalogType_LAMBDA DataCatalogType = "LAMBDA"
+	DataCatalogType_FEDERATED DataCatalogType = "FEDERATED"
+	DataCatalogType_GLUE      DataCatalogType = "GLUE"
+	DataCatalogType_HIVE      DataCatalogType = "HIVE"
+	DataCatalogType_LAMBDA    DataCatalogType = "LAMBDA"
 )
 
 type EncryptionOption string
@@ -110,6 +150,13 @@ const (
 	QueryExecutionState_QUEUED    QueryExecutionState = "QUEUED"
 	QueryExecutionState_RUNNING   QueryExecutionState = "RUNNING"
 	QueryExecutionState_SUCCEEDED QueryExecutionState = "SUCCEEDED"
+)
+
+type QueryResultType string
+
+const (
+	QueryResultType_DATA_MANIFEST QueryResultType = "DATA_MANIFEST"
+	QueryResultType_DATA_ROWS     QueryResultType = "DATA_ROWS"
 )
 
 type S3ACLOption string

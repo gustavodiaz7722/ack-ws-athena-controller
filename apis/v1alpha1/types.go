@@ -51,6 +51,7 @@ type ApplicationDPUSizes struct {
 // error, user error, or other error.
 type AthenaError struct {
 	ErrorMessage *string `json:"errorMessage,omitempty"`
+	Retryable    *bool   `json:"retryable,omitempty"`
 }
 
 // Contains statistics for a notebook calculation.
@@ -83,12 +84,13 @@ type Column struct {
 
 // Information about the columns in a query execution result.
 type ColumnInfo struct {
-	CatalogName *string `json:"catalogName,omitempty"`
-	Label       *string `json:"label,omitempty"`
-	Name        *string `json:"name,omitempty"`
-	SchemaName  *string `json:"schemaName,omitempty"`
-	TableName   *string `json:"tableName,omitempty"`
-	Type        *string `json:"type_,omitempty"`
+	CaseSensitive *bool   `json:"caseSensitive,omitempty"`
+	CatalogName   *string `json:"catalogName,omitempty"`
+	Label         *string `json:"label,omitempty"`
+	Name          *string `json:"name,omitempty"`
+	SchemaName    *string `json:"schemaName,omitempty"`
+	TableName     *string `json:"tableName,omitempty"`
+	Type          *string `json:"type_,omitempty"`
 }
 
 // Specifies the customer managed KMS key that is used to encrypt the user's
@@ -103,8 +105,11 @@ type CustomerContentEncryptionConfiguration struct {
 // The summary information for the data catalog, which includes its name and
 // type.
 type DataCatalogSummary struct {
-	CatalogName *string `json:"catalogName,omitempty"`
-	Type        *string `json:"type_,omitempty"`
+	CatalogName    *string `json:"catalogName,omitempty"`
+	ConnectionType *string `json:"connectionType,omitempty"`
+	Error          *string `json:"error,omitempty"`
+	Status         *string `json:"status,omitempty"`
+	Type           *string `json:"type_,omitempty"`
 }
 
 // Contains information about a data catalog in an Amazon Web Services account.
@@ -112,10 +117,13 @@ type DataCatalogSummary struct {
 // In the Athena console, data catalogs are listed as "data sources" on the
 // Data sources page under the Data source name column.
 type DataCatalog_SDK struct {
-	Description *string            `json:"description,omitempty"`
-	Name        *string            `json:"name,omitempty"`
-	Parameters  map[string]*string `json:"parameters,omitempty"`
-	Type        *string            `json:"type_,omitempty"`
+	ConnectionType *string            `json:"connectionType,omitempty"`
+	Description    *string            `json:"description,omitempty"`
+	Error          *string            `json:"error,omitempty"`
+	Name           *string            `json:"name,omitempty"`
+	Parameters     map[string]*string `json:"parameters,omitempty"`
+	Status         *string            `json:"status,omitempty"`
+	Type           *string            `json:"type_,omitempty"`
 }
 
 // Contains metadata information for a database in a data catalog.
@@ -152,6 +160,36 @@ type EngineVersion struct {
 type IdentityCenterConfiguration struct {
 	EnableIdentityCenter      *bool   `json:"enableIdentityCenter,omitempty"`
 	IdentityCenterInstanceARN *string `json:"identityCenterInstanceARN,omitempty"`
+}
+
+// The configuration for storing results in Athena owned storage, which includes
+// whether this feature is enabled; whether encryption configuration, if any,
+// is used for encrypting query results.
+type ManagedQueryResultsConfiguration struct {
+	Enabled *bool `json:"enabled,omitempty"`
+	// If you encrypt query and calculation results in Athena owned storage, this
+	// field indicates the encryption option (for example, SSE_KMS or CSE_KMS) and
+	// key information.
+	EncryptionConfiguration *ManagedQueryResultsEncryptionConfiguration `json:"encryptionConfiguration,omitempty"`
+}
+
+// Updates the configuration for managed query results.
+type ManagedQueryResultsConfigurationUpdates struct {
+	Enabled *bool `json:"enabled,omitempty"`
+	// If you encrypt query and calculation results in Athena owned storage, this
+	// field indicates the encryption option (for example, SSE_KMS or CSE_KMS) and
+	// key information.
+	EncryptionConfiguration       *ManagedQueryResultsEncryptionConfiguration `json:"encryptionConfiguration,omitempty"`
+	RemoveEncryptionConfiguration *bool                                       `json:"removeEncryptionConfiguration,omitempty"`
+}
+
+// If you encrypt query and calculation results in Athena owned storage, this
+// field indicates the encryption option (for example, SSE_KMS or CSE_KMS) and
+// key information.
+type ManagedQueryResultsEncryptionConfiguration struct {
+	KMSKey *string `json:"kmsKey,omitempty"`
+	// Reference field for KMSKey
+	KMSKeyRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"kmsKeyRef,omitempty"`
 }
 
 // A query, where QueryString contains the SQL statements that make up the query.
@@ -195,7 +233,11 @@ type QueryExecution struct {
 	// The Athena engine version for running queries, or the PySpark engine version
 	// for running sessions.
 	EngineVersion *EngineVersion `json:"engineVersion,omitempty"`
-	Query         *string        `json:"query,omitempty"`
+	// The configuration for storing results in Athena owned storage, which includes
+	// whether this feature is enabled; whether encryption configuration, if any,
+	// is used for encrypting query results.
+	ManagedQueryResultsConfiguration *ManagedQueryResultsConfiguration `json:"managedQueryResultsConfiguration,omitempty"`
+	Query                            *string                           `json:"query,omitempty"`
 	// Specifies whether Amazon S3 access grants are enabled for query results.
 	QueryResultsS3AccessGrantsConfiguration *QueryResultsS3AccessGrantsConfiguration `json:"queryResultsS3AccessGrantsConfiguration,omitempty"`
 	// The location in Amazon S3 where query and calculation results are stored
@@ -288,6 +330,17 @@ type ResultConfigurationUpdates struct {
 	RemoveOutputLocation          *bool                    `json:"removeOutputLocation,omitempty"`
 }
 
+// Specifies whether previous query results are reused, and if so, their maximum
+// age.
+type ResultReuseByAgeConfiguration struct {
+	Enabled *bool `json:"enabled,omitempty"`
+}
+
+// Contains information about whether the result of a previous query was reused.
+type ResultReuseInformation struct {
+	ReusedPreviousResult *bool `json:"reusedPreviousResult,omitempty"`
+}
+
 // Contains session configuration information.
 type SessionConfiguration struct {
 	// If query and calculation results are encrypted in Amazon S3, indicates the
@@ -337,9 +390,20 @@ type Tag struct {
 	Value *string `json:"value,omitempty"`
 }
 
+// Information about a named query ID that could not be processed.
+type UnprocessedNamedQueryID struct {
+	ErrorMessage *string `json:"errorMessage,omitempty"`
+}
+
 // The name of a prepared statement that could not be returned.
 type UnprocessedPreparedStatementName struct {
+	ErrorMessage  *string `json:"errorMessage,omitempty"`
 	StatementName *string `json:"statementName,omitempty"`
+}
+
+// Describes a query execution that failed to process.
+type UnprocessedQueryExecutionID struct {
+	ErrorMessage *string `json:"errorMessage,omitempty"`
 }
 
 // The configuration of the workgroup, which includes the location in Amazon
@@ -366,8 +430,12 @@ type WorkGroupConfiguration struct {
 	// Reference field for ExecutionRole
 	ExecutionRoleRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"executionRoleRef,omitempty"`
 	// Specifies whether the workgroup is IAM Identity Center supported.
-	IdentityCenterConfiguration     *IdentityCenterConfiguration `json:"identityCenterConfiguration,omitempty"`
-	PublishCloudWatchMetricsEnabled *bool                        `json:"publishCloudWatchMetricsEnabled,omitempty"`
+	IdentityCenterConfiguration *IdentityCenterConfiguration `json:"identityCenterConfiguration,omitempty"`
+	// The configuration for storing results in Athena owned storage, which includes
+	// whether this feature is enabled; whether encryption configuration, if any,
+	// is used for encrypting query results.
+	ManagedQueryResultsConfiguration *ManagedQueryResultsConfiguration `json:"managedQueryResultsConfiguration,omitempty"`
+	PublishCloudWatchMetricsEnabled  *bool                             `json:"publishCloudWatchMetricsEnabled,omitempty"`
 	// Specifies whether Amazon S3 access grants are enabled for query results.
 	QueryResultsS3AccessGrantsConfiguration *QueryResultsS3AccessGrantsConfiguration `json:"queryResultsS3AccessGrantsConfiguration,omitempty"`
 	RequesterPaysEnabled                    *bool                                    `json:"requesterPaysEnabled,omitempty"`
@@ -395,9 +463,11 @@ type WorkGroupConfigurationUpdates struct {
 	EnforceWorkGroupConfiguration          *bool                                   `json:"enforceWorkGroupConfiguration,omitempty"`
 	// The Athena engine version for running queries, or the PySpark engine version
 	// for running sessions.
-	EngineVersion                   *EngineVersion `json:"engineVersion,omitempty"`
-	ExecutionRole                   *string        `json:"executionRole,omitempty"`
-	PublishCloudWatchMetricsEnabled *bool          `json:"publishCloudWatchMetricsEnabled,omitempty"`
+	EngineVersion *EngineVersion `json:"engineVersion,omitempty"`
+	ExecutionRole *string        `json:"executionRole,omitempty"`
+	// Updates the configuration for managed query results.
+	ManagedQueryResultsConfigurationUpdates *ManagedQueryResultsConfigurationUpdates `json:"managedQueryResultsConfigurationUpdates,omitempty"`
+	PublishCloudWatchMetricsEnabled         *bool                                    `json:"publishCloudWatchMetricsEnabled,omitempty"`
 	// Specifies whether Amazon S3 access grants are enabled for query results.
 	QueryResultsS3AccessGrantsConfiguration      *QueryResultsS3AccessGrantsConfiguration `json:"queryResultsS3AccessGrantsConfiguration,omitempty"`
 	RemoveBytesScannedCutoffPerQuery             *bool                                    `json:"removeBytesScannedCutoffPerQuery,omitempty"`

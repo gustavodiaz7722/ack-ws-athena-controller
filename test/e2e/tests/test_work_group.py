@@ -90,6 +90,10 @@ class TestWorkGroup:
         description = latest["Description"]
         assert description == "initial description"
 
+        # verify the workgroup was created with managed query results enabled
+        mqr = latest["Configuration"]["ManagedQueryResultsConfiguration"]
+        assert mqr["Enabled"] is True
+
         wg_tags = athena_client.list_tags_for_resource(
             ResourceARN=cr["status"]["ackResourceMetadata"]["arn"],
         )["Tags"]
@@ -112,7 +116,25 @@ class TestWorkGroup:
         assert "Description" in latest
         description = latest["Description"]
         assert description == "updated description"
-        
+
+        # disable managed query results via update
+        updates = {
+            "spec": {
+                "configuration": {
+                    "managedQueryResultsConfiguration": {
+                        "enabled": False,
+                    },
+                },
+            },
+        }
+        k8s.patch_custom_resource(ref, updates)
+        time.sleep(MODIFY_WAIT_SECONDS)
+
+        latest = work_group.get(work_group_name)
+        assert latest is not None
+        mqr = latest["Configuration"]["ManagedQueryResultsConfiguration"]
+        assert mqr["Enabled"] is False
+
         # update the tags
         new_tags = [
             {

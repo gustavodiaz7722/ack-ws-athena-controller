@@ -126,6 +126,28 @@ func newResourceDelta(
 				}
 			}
 		}
+		if ackcompare.HasNilDifference(a.ko.Spec.Configuration.ManagedQueryResultsConfiguration, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration) {
+			delta.Add("Spec.Configuration.ManagedQueryResultsConfiguration", a.ko.Spec.Configuration.ManagedQueryResultsConfiguration, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration)
+		} else if a.ko.Spec.Configuration.ManagedQueryResultsConfiguration != nil && b.ko.Spec.Configuration.ManagedQueryResultsConfiguration != nil {
+			if ackcompare.HasNilDifference(a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled) {
+				delta.Add("Spec.Configuration.ManagedQueryResultsConfiguration.Enabled", a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled)
+			} else if a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled != nil && b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled != nil {
+				if *a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled != *b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled {
+					delta.Add("Spec.Configuration.ManagedQueryResultsConfiguration.Enabled", a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration) {
+				delta.Add("Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration", a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration)
+			} else if a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration != nil && b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration != nil {
+				if ackcompare.HasNilDifference(a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey) {
+					delta.Add("Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey", a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey)
+				} else if a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey != nil && b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey != nil {
+					if *a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey != *b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey {
+						delta.Add("Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey", a.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey, b.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey)
+					}
+				}
+			}
+		}
 		if ackcompare.HasNilDifference(a.ko.Spec.Configuration.PublishCloudWatchMetricsEnabled, b.ko.Spec.Configuration.PublishCloudWatchMetricsEnabled) {
 			delta.Add("Spec.Configuration.PublishCloudWatchMetricsEnabled", a.ko.Spec.Configuration.PublishCloudWatchMetricsEnabled, b.ko.Spec.Configuration.PublishCloudWatchMetricsEnabled)
 		} else if a.ko.Spec.Configuration.PublishCloudWatchMetricsEnabled != nil && b.ko.Spec.Configuration.PublishCloudWatchMetricsEnabled != nil {

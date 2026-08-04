@@ -90,10 +90,20 @@ func (rm *resourceManager) sdkFind(
 	// the original Kubernetes object we passed to the function
 	ko := r.ko.DeepCopy()
 
+	if resp.DataCatalog.ConnectionType != "" {
+		ko.Status.ConnectionType = aws.String(string(resp.DataCatalog.ConnectionType))
+	} else {
+		ko.Status.ConnectionType = nil
+	}
 	if resp.DataCatalog.Description != nil {
 		ko.Spec.Description = resp.DataCatalog.Description
 	} else {
 		ko.Spec.Description = nil
+	}
+	if resp.DataCatalog.Error != nil {
+		ko.Status.Error = resp.DataCatalog.Error
+	} else {
+		ko.Status.Error = nil
 	}
 	if resp.DataCatalog.Name != nil {
 		ko.Spec.Name = resp.DataCatalog.Name
@@ -104,6 +114,11 @@ func (rm *resourceManager) sdkFind(
 		ko.Spec.Parameters = aws.StringMap(resp.DataCatalog.Parameters)
 	} else {
 		ko.Spec.Parameters = nil
+	}
+	if resp.DataCatalog.Status != "" {
+		ko.Status.Status = aws.String(string(resp.DataCatalog.Status))
+	} else {
+		ko.Status.Status = nil
 	}
 	if resp.DataCatalog.Type != "" {
 		ko.Spec.Type = aws.String(string(resp.DataCatalog.Type))
@@ -183,6 +198,50 @@ func (rm *resourceManager) sdkCreate(
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
+	// CreateDataCatalog returns a nil DataCatalog body for non-FEDERATED
+	// catalog types (LAMBDA, HIVE, GLUE). Guard against nil dereference in the
+	// generated set-output block and preserve the desired Spec — the readOne
+	// path reads authoritative state from GetDataCatalog on the next reconcile.
+	if resp.DataCatalog == nil {
+		rm.setStatusDefaults(ko)
+		return &resource{ko}, nil
+	}
+
+	if resp.DataCatalog.ConnectionType != "" {
+		ko.Status.ConnectionType = aws.String(string(resp.DataCatalog.ConnectionType))
+	} else {
+		ko.Status.ConnectionType = nil
+	}
+	if resp.DataCatalog.Description != nil {
+		ko.Spec.Description = resp.DataCatalog.Description
+	} else {
+		ko.Spec.Description = nil
+	}
+	if resp.DataCatalog.Error != nil {
+		ko.Status.Error = resp.DataCatalog.Error
+	} else {
+		ko.Status.Error = nil
+	}
+	if resp.DataCatalog.Name != nil {
+		ko.Spec.Name = resp.DataCatalog.Name
+	} else {
+		ko.Spec.Name = nil
+	}
+	if resp.DataCatalog.Parameters != nil {
+		ko.Spec.Parameters = aws.StringMap(resp.DataCatalog.Parameters)
+	} else {
+		ko.Spec.Parameters = nil
+	}
+	if resp.DataCatalog.Status != "" {
+		ko.Status.Status = aws.String(string(resp.DataCatalog.Status))
+	} else {
+		ko.Status.Status = nil
+	}
+	if resp.DataCatalog.Type != "" {
+		ko.Spec.Type = aws.String(string(resp.DataCatalog.Type))
+	} else {
+		ko.Spec.Type = nil
+	}
 
 	rm.setStatusDefaults(ko)
 	return &resource{ko}, nil

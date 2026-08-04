@@ -42,6 +42,9 @@ import (
 // +kubebuilder:rbac:groups=kms.services.k8s.aws,resources=keys,verbs=get;list
 // +kubebuilder:rbac:groups=kms.services.k8s.aws,resources=keys/status,verbs=get;list
 
+// +kubebuilder:rbac:groups=kms.services.k8s.aws,resources=keys,verbs=get;list
+// +kubebuilder:rbac:groups=kms.services.k8s.aws,resources=keys/status,verbs=get;list
+
 // ClearResolvedReferences removes any reference values that were made
 // concrete in the spec. It returns a copy of the input AWSResource which
 // contains the original *Ref values, but none of their respective concrete
@@ -60,6 +63,16 @@ func (rm *resourceManager) ClearResolvedReferences(res acktypes.AWSResource) ack
 	if ko.Spec.Configuration != nil {
 		if ko.Spec.Configuration.ExecutionRoleRef != nil {
 			ko.Spec.Configuration.ExecutionRole = nil
+		}
+	}
+
+	if ko.Spec.Configuration != nil {
+		if ko.Spec.Configuration.ManagedQueryResultsConfiguration != nil {
+			if ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration != nil {
+				if ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKeyRef != nil {
+					ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey = nil
+				}
+			}
 		}
 	}
 
@@ -104,6 +117,12 @@ func (rm *resourceManager) ResolveReferences(
 		resourceHasReferences = resourceHasReferences || fieldHasReferences
 	}
 
+	if fieldHasReferences, err := rm.resolveReferenceForConfiguration_ManagedQueryResultsConfiguration_EncryptionConfiguration_KMSKey(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
 	if fieldHasReferences, err := rm.resolveReferenceForConfiguration_ResultConfiguration_EncryptionConfiguration_KMSKey(ctx, apiReader, ko); err != nil {
 		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
 	} else {
@@ -128,6 +147,16 @@ func validateReferenceFields(ko *svcapitypes.WorkGroup) error {
 	if ko.Spec.Configuration != nil {
 		if ko.Spec.Configuration.ExecutionRoleRef != nil && ko.Spec.Configuration.ExecutionRole != nil {
 			return ackerr.ResourceReferenceAndIDNotSupportedFor("Configuration.ExecutionRole", "Configuration.ExecutionRoleRef")
+		}
+	}
+
+	if ko.Spec.Configuration != nil {
+		if ko.Spec.Configuration.ManagedQueryResultsConfiguration != nil {
+			if ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration != nil {
+				if ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKeyRef != nil && ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey != nil {
+					return ackerr.ResourceReferenceAndIDNotSupportedFor("Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey", "Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKeyRef")
+				}
+			}
 		}
 	}
 
@@ -329,6 +358,49 @@ func getReferencedResourceState_Role(
 			"Status.ACKResourceMetadata.ARN")
 	}
 	return nil
+}
+
+// resolveReferenceForConfiguration_ManagedQueryResultsConfiguration_EncryptionConfiguration_KMSKey reads the resource referenced
+// from Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKeyRef field and sets the Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForConfiguration_ManagedQueryResultsConfiguration_EncryptionConfiguration_KMSKey(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.WorkGroup,
+) (hasReferences bool, err error) {
+	if ko.Spec.Configuration != nil {
+		if ko.Spec.Configuration.ManagedQueryResultsConfiguration != nil {
+			if ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration != nil {
+				if ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKeyRef != nil && ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKeyRef.From != nil {
+					hasReferences = true
+					arr := ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKeyRef.From
+					if arr.Name == nil || *arr.Name == "" {
+						return hasReferences, fmt.Errorf("provided resource reference is nil or empty: Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKeyRef")
+					}
+					namespace, err := ackrt.ResolveCrossNamespaceReference(
+						ctx,
+						rm.cfg.EnableCrossNamespace,
+						&ko.Status.Conditions,
+						ackrt.CrossNamespaceRefKindResource,
+						ko.ObjectMeta.GetNamespace(),
+						arr.Namespace,
+						*arr.Name,
+					)
+					if err != nil {
+						return hasReferences, err
+					}
+					obj := &kmsapitypes.Key{}
+					if err := getReferencedResourceState_Key(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+						return hasReferences, err
+					}
+					ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey = (*string)(obj.Status.ACKResourceMetadata.ARN)
+				}
+			}
+		}
+	}
+
+	return hasReferences, nil
 }
 
 // resolveReferenceForConfiguration_ResultConfiguration_EncryptionConfiguration_KMSKey reads the resource referenced

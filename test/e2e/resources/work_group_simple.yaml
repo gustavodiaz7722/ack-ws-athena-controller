@@ -5,6 +5,9 @@ metadata:
 spec:
   name: $WORK_GROUP_NAME
   description: initial description
+  configuration:
+    managedQueryResultsConfiguration:
+      enabled: true
   tags:
     - key: k1
       value: v1

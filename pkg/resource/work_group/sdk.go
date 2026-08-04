@@ -134,51 +134,63 @@ func (rm *resourceManager) sdkFind(
 			}
 			f0.IdentityCenterConfiguration = f0f7
 		}
+		if resp.WorkGroup.Configuration.ManagedQueryResultsConfiguration != nil {
+			f0f8 := &svcapitypes.ManagedQueryResultsConfiguration{}
+			f0f8.Enabled = &resp.WorkGroup.Configuration.ManagedQueryResultsConfiguration.Enabled
+			if resp.WorkGroup.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration != nil {
+				f0f8f1 := &svcapitypes.ManagedQueryResultsEncryptionConfiguration{}
+				if resp.WorkGroup.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KmsKey != nil {
+					f0f8f1.KMSKey = resp.WorkGroup.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KmsKey
+				}
+				f0f8.EncryptionConfiguration = f0f8f1
+			}
+			f0.ManagedQueryResultsConfiguration = f0f8
+		}
 		if resp.WorkGroup.Configuration.PublishCloudWatchMetricsEnabled != nil {
 			f0.PublishCloudWatchMetricsEnabled = resp.WorkGroup.Configuration.PublishCloudWatchMetricsEnabled
 		}
 		if resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration != nil {
-			f0f9 := &svcapitypes.QueryResultsS3AccessGrantsConfiguration{}
+			f0f10 := &svcapitypes.QueryResultsS3AccessGrantsConfiguration{}
 			if resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.AuthenticationType != "" {
-				f0f9.AuthenticationType = aws.String(string(resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.AuthenticationType))
+				f0f10.AuthenticationType = aws.String(string(resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.AuthenticationType))
 			}
 			if resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.CreateUserLevelPrefix != nil {
-				f0f9.CreateUserLevelPrefix = resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.CreateUserLevelPrefix
+				f0f10.CreateUserLevelPrefix = resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.CreateUserLevelPrefix
 			}
 			if resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.EnableS3AccessGrants != nil {
-				f0f9.EnableS3AccessGrants = resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.EnableS3AccessGrants
+				f0f10.EnableS3AccessGrants = resp.WorkGroup.Configuration.QueryResultsS3AccessGrantsConfiguration.EnableS3AccessGrants
 			}
-			f0.QueryResultsS3AccessGrantsConfiguration = f0f9
+			f0.QueryResultsS3AccessGrantsConfiguration = f0f10
 		}
 		if resp.WorkGroup.Configuration.RequesterPaysEnabled != nil {
 			f0.RequesterPaysEnabled = resp.WorkGroup.Configuration.RequesterPaysEnabled
 		}
 		if resp.WorkGroup.Configuration.ResultConfiguration != nil {
-			f0f11 := &svcapitypes.ResultConfiguration{}
+			f0f12 := &svcapitypes.ResultConfiguration{}
 			if resp.WorkGroup.Configuration.ResultConfiguration.AclConfiguration != nil {
-				f0f11f0 := &svcapitypes.ACLConfiguration{}
+				f0f12f0 := &svcapitypes.ACLConfiguration{}
 				if resp.WorkGroup.Configuration.ResultConfiguration.AclConfiguration.S3AclOption != "" {
-					f0f11f0.S3ACLOption = aws.String(string(resp.WorkGroup.Configuration.ResultConfiguration.AclConfiguration.S3AclOption))
+					f0f12f0.S3ACLOption = aws.String(string(resp.WorkGroup.Configuration.ResultConfiguration.AclConfiguration.S3AclOption))
 				}
-				f0f11.ACLConfiguration = f0f11f0
+				f0f12.ACLConfiguration = f0f12f0
 			}
 			if resp.WorkGroup.Configuration.ResultConfiguration.EncryptionConfiguration != nil {
-				f0f11f1 := &svcapitypes.EncryptionConfiguration{}
+				f0f12f1 := &svcapitypes.EncryptionConfiguration{}
 				if resp.WorkGroup.Configuration.ResultConfiguration.EncryptionConfiguration.EncryptionOption != "" {
-					f0f11f1.EncryptionOption = aws.String(string(resp.WorkGroup.Configuration.ResultConfiguration.EncryptionConfiguration.EncryptionOption))
+					f0f12f1.EncryptionOption = aws.String(string(resp.WorkGroup.Configuration.ResultConfiguration.EncryptionConfiguration.EncryptionOption))
 				}
 				if resp.WorkGroup.Configuration.ResultConfiguration.EncryptionConfiguration.KmsKey != nil {
-					f0f11f1.KMSKey = resp.WorkGroup.Configuration.ResultConfiguration.EncryptionConfiguration.KmsKey
+					f0f12f1.KMSKey = resp.WorkGroup.Configuration.ResultConfiguration.EncryptionConfiguration.KmsKey
 				}
-				f0f11.EncryptionConfiguration = f0f11f1
+				f0f12.EncryptionConfiguration = f0f12f1
 			}
 			if resp.WorkGroup.Configuration.ResultConfiguration.ExpectedBucketOwner != nil {
-				f0f11.ExpectedBucketOwner = resp.WorkGroup.Configuration.ResultConfiguration.ExpectedBucketOwner
+				f0f12.ExpectedBucketOwner = resp.WorkGroup.Configuration.ResultConfiguration.ExpectedBucketOwner
 			}
 			if resp.WorkGroup.Configuration.ResultConfiguration.OutputLocation != nil {
-				f0f11.OutputLocation = resp.WorkGroup.Configuration.ResultConfiguration.OutputLocation
+				f0f12.OutputLocation = resp.WorkGroup.Configuration.ResultConfiguration.OutputLocation
 			}
-			f0.ResultConfiguration = f0f11
+			f0.ResultConfiguration = f0f12
 		}
 		ko.Spec.Configuration = f0
 	} else {
@@ -324,51 +336,65 @@ func (rm *resourceManager) newCreateRequestPayload(
 			}
 			f0.IdentityCenterConfiguration = f0f7
 		}
+		if r.ko.Spec.Configuration.ManagedQueryResultsConfiguration != nil {
+			f0f8 := &svcsdktypes.ManagedQueryResultsConfiguration{}
+			if r.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled != nil {
+				f0f8.Enabled = *r.ko.Spec.Configuration.ManagedQueryResultsConfiguration.Enabled
+			}
+			if r.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration != nil {
+				f0f8f1 := &svcsdktypes.ManagedQueryResultsEncryptionConfiguration{}
+				if r.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey != nil {
+					f0f8f1.KmsKey = r.ko.Spec.Configuration.ManagedQueryResultsConfiguration.EncryptionConfiguration.KMSKey
+				}
+				f0f8.EncryptionConfiguration = f0f8f1
+			}
+			f0.ManagedQueryResultsConfiguration = f0f8
+		}
 		if r.ko.Spec.Configuration.PublishCloudWatchMetricsEnabled != nil {
 			f0.PublishCloudWatchMetricsEnabled = r.ko.Spec.Configuration.PublishCloudWatchMetricsEnabled
 		}
 		if r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration != nil {
-			f0f9 := &svcsdktypes.QueryResultsS3AccessGrantsConfiguration{}
+			f0f10 := &svcsdktypes.QueryResultsS3AccessGrantsConfiguration{}
 			if r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.AuthenticationType != nil {
-				f0f9.AuthenticationType = svcsdktypes.AuthenticationType(*r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.AuthenticationType)
+				f0f10.AuthenticationType = svcsdktypes.AuthenticationType(*r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.AuthenticationType)
 			}
 			if r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.CreateUserLevelPrefix != nil {
-				f0f9.CreateUserLevelPrefix = r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.CreateUserLevelPrefix
+				f0f10.CreateUserLevelPrefix = r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.CreateUserLevelPrefix
 			}
 			if r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.EnableS3AccessGrants != nil {
-				f0f9.EnableS3AccessGrants = r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.EnableS3AccessGrants
+				f0f10.EnableS3AccessGrants = r.ko.Spec.Configuration.QueryResultsS3AccessGrantsConfiguration.EnableS3AccessGrants
 			}
-			f0.QueryResultsS3AccessGrantsConfiguration = f0f9
+			f0.QueryResultsS3AccessGrantsConfiguration = f0f10
 		}
 		if r.ko.Spec.Configuration.RequesterPaysEnabled != nil {
 			f0.RequesterPaysEnabled = r.ko.Spec.Configuration.RequesterPaysEnabled
 		}
 		if r.ko.Spec.Configuration.ResultConfiguration != nil {
-			f0f11 := &svcsdktypes.ResultConfiguration{}
+			f0f12 := &svcsdktypes.ResultConfiguration{}
 			if r.ko.Spec.Configuration.ResultConfiguration.ACLConfiguration != nil {
-				f0f11f0 := &svcsdktypes.AclConfiguration{}
+				f0f12f0 := &svcsdktypes.AclConfiguration{}
 				if r.ko.Spec.Configuration.ResultConfiguration.ACLConfiguration.S3ACLOption != nil {
-					f0f11f0.S3AclOption = svcsdktypes.S3AclOption(*r.ko.Spec.Configuration.ResultConfiguration.ACLConfiguration.S3ACLOption)
+					f0f12f0.S3AclOption = svcsdktypes.S3AclOption(*r.ko.Spec.Configuration.ResultConfiguration.ACLConfiguration.S3ACLOption)
 				}
-				f0f11.AclConfiguration = f0f11f0
+				f0f12.AclConfiguration = f0f12f0
 			}
 			if r.ko.Spec.Configuration.ResultConfiguration.EncryptionConfiguration != nil {
-				f0f11f1 := &svcsdktypes.EncryptionConfiguration{}
+				f0f12f1 := &svcsdktypes.EncryptionConfiguration{}
 				if r.ko.Spec.Configuration.ResultConfiguration.EncryptionConfiguration.EncryptionOption != nil {
-					f0f11f1.EncryptionOption = svcsdktypes.EncryptionOption(*r.ko.Spec.Configuration.ResultConfiguration.EncryptionConfiguration.EncryptionOption)
+					f0f12f1.EncryptionOption = svcsdktypes.EncryptionOption(*r.ko.Spec.Configuration.ResultConfiguration.EncryptionConfiguration.EncryptionOption)
 				}
 				if r.ko.Spec.Configuration.ResultConfiguration.EncryptionConfiguration.KMSKey != nil {
-					f0f11f1.KmsKey = r.ko.Spec.Configuration.ResultConfiguration.EncryptionConfiguration.KMSKey
+					f0f12f1.KmsKey = r.ko.Spec.Configuration.ResultConfiguration.EncryptionConfiguration.KMSKey
 				}
-				f0f11.EncryptionConfiguration = f0f11f1
+				f0f12.EncryptionConfiguration = f0f12f1
 			}
 			if r.ko.Spec.Configuration.ResultConfiguration.ExpectedBucketOwner != nil {
-				f0f11.ExpectedBucketOwner = r.ko.Spec.Configuration.ResultConfiguration.ExpectedBucketOwner
+				f0f12.ExpectedBucketOwner = r.ko.Spec.Configuration.ResultConfiguration.ExpectedBucketOwner
 			}
 			if r.ko.Spec.Configuration.ResultConfiguration.OutputLocation != nil {
-				f0f11.OutputLocation = r.ko.Spec.Configuration.ResultConfiguration.OutputLocation
+				f0f12.OutputLocation = r.ko.Spec.Configuration.ResultConfiguration.OutputLocation
 			}
-			f0.ResultConfiguration = f0f11
+			f0.ResultConfiguration = f0f12
 		}
 		res.Configuration = f0
 	}
@@ -420,6 +446,31 @@ func (rm *resourceManager) sdkUpdate(
 	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
 	if err != nil {
 		return nil, err
+	}
+	// UpdateWorkGroup accepts a WorkGroupConfigurationUpdates shape rather than
+	// the WorkGroupConfiguration shape used on create. Because the field names
+	// differ, the generated newUpdateRequestPayload does not map
+	// Spec.Configuration into the update request, so managed query results
+	// changes would otherwise be silently dropped. Wire them through manually.
+	if delta.DifferentAt("Spec.Configuration.ManagedQueryResultsConfiguration") &&
+		desired.ko.Spec.Configuration != nil {
+		mqrc := desired.ko.Spec.Configuration.ManagedQueryResultsConfiguration
+		mqrcUpdates := &svcsdktypes.ManagedQueryResultsConfigurationUpdates{}
+		if mqrc != nil {
+			if mqrc.Enabled != nil {
+				mqrcUpdates.Enabled = mqrc.Enabled
+			}
+			if mqrc.EncryptionConfiguration != nil &&
+				mqrc.EncryptionConfiguration.KMSKey != nil {
+				mqrcUpdates.EncryptionConfiguration = &svcsdktypes.ManagedQueryResultsEncryptionConfiguration{
+					KmsKey: mqrc.EncryptionConfiguration.KMSKey,
+				}
+			}
+		}
+		if input.ConfigurationUpdates == nil {
+			input.ConfigurationUpdates = &svcsdktypes.WorkGroupConfigurationUpdates{}
+		}
+		input.ConfigurationUpdates.ManagedQueryResultsConfigurationUpdates = mqrcUpdates
 	}
 
 	var resp *svcsdk.UpdateWorkGroupOutput
@@ -593,6 +644,18 @@ func (rm *resourceManager) updateConditions(
 // and if the exception indicates that it is a Terminal exception
 // 'Terminal' exception are specified in generator configuration
 func (rm *resourceManager) terminalAWSError(err error) bool {
-	// No terminal_errors specified for this resource in generator config
-	return false
+	if err == nil {
+		return false
+	}
+
+	var terminalErr smithy.APIError
+	if !errors.As(err, &terminalErr) {
+		return false
+	}
+	switch terminalErr.ErrorCode() {
+	case "InvalidRequestException":
+		return true
+	default:
+		return false
+	}
 }

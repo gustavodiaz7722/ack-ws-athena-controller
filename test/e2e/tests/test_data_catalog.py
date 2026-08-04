@@ -277,6 +277,7 @@ class TestDataCatalogHive:
         assert latest["Type"] == "HIVE"
         assert latest["Description"] == "hive data catalog for e2e test"
         assert "metadata-function" in latest.get("Parameters", {})
+        assert "sdk-version" in latest.get("Parameters", {})
 
         catalog_tags = athena_client.list_tags_for_resource(
             ResourceARN=cr["status"]["ackResourceMetadata"]["arn"],
