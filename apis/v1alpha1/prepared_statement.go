@@ -38,8 +38,8 @@ type PreparedStatementSpec struct {
 	// The name of the workgroup to which the prepared statement belongs.
 	//
 	// Regex Pattern: `^[a-zA-Z0-9._-]{1,128}$`
-	// +kubebuilder:validation:Required
-	WorkGroup *string `json:"workGroup"`
+	WorkGroup    *string                                  `json:"workGroup,omitempty"`
+	WorkGroupRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"workGroupRef,omitempty"`
 }
 
 // PreparedStatementStatus defines the observed state of PreparedStatement
