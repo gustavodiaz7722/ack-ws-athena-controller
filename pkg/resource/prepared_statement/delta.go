@@ -20,6 +20,7 @@ import (
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
@@ -68,6 +69,9 @@ func newResourceDelta(
 		if *a.ko.Spec.WorkGroup != *b.ko.Spec.WorkGroup {
 			delta.Add("Spec.WorkGroup", a.ko.Spec.WorkGroup, b.ko.Spec.WorkGroup)
 		}
+	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.WorkGroupRef, b.ko.Spec.WorkGroupRef) {
+		delta.Add("Spec.WorkGroupRef", a.ko.Spec.WorkGroupRef, b.ko.Spec.WorkGroupRef)
 	}
 
 	return delta
